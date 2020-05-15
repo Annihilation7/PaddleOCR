@@ -29,6 +29,7 @@ def is_poly_outside_rect(poly, x, y, w, h):
 
 
 def split_regions(axis):
+    # 并没有考虑到边界
     regions = []
     min_axis = 0
     for i in range(1, axis.shape[0]):
@@ -36,6 +37,19 @@ def split_regions(axis):
             region = axis[min_axis:i]
             min_axis = i
             regions.append(region)
+    return regions
+
+
+def my_split_regions(axis):
+    # 我自己的split_regions版本
+    regions = []
+    i = 0
+    while i < len(axis):
+        j = i + 1
+        while j < len(axis) and axis[j] - axis[i] == j - i:
+            j += 1
+        regions.append(axis[i: j])
+        i = j
     return regions
 
 
@@ -49,7 +63,7 @@ def random_select(axis, max_size):
 
 
 def region_wise_random_select(regions, max_size):
-    selected_index = list(np.random.choice(len(regions), 2))
+    selected_index = list(np.random.choice(len(regions), 2))  # [0, len(regions) - 1]
     selected_values = []
     for index in selected_index:
         axis = regions[index]
